@@ -34,7 +34,7 @@ const PRELOADER_CONFIG = {
 
 2. Replace the `PRELOADER_CONFIG` values with your project details.
 
-3. Open the `index.html` file in your browser to preview the preloader.
+3. Open the `preloader.html` file in your browser to preview the preloader.
 
 4. Deploy the file to your web server or hosting platform.
 
@@ -42,7 +42,7 @@ const PRELOADER_CONFIG = {
 
 ```
 .
-├── index.html   # Main HTML file
+├── preloader.html   # Main HTML file
 ├── README.md    # Project documentation
 ```
 
