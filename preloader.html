@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TEMPLATE CONFIG -->
+    <script>
+        const PRELOADER_CONFIG = {
+            heading: "YOUR_PROJECT_NAME",    // Your project name
+            tagline: "YOUR_TAGLINE",        // Your tagline
+            redirectUrl: "https://your-website-url.com",        // Your website URL
+            animationDuration: 3.5          // Animation duration (seconds)
+        };
+    </script>
+
+    <title>Preloader Template</title>
+    <style>
+        :root {
+            --chai-bg: #000000;
+            --chai-text: #e7e8e8;
+            --heading-size: 200px;
+            --tagline-size: 18px;
+        }
+          
+        body {
+            margin: 0;
+            background-color: var(--chai-bg);
+            -webkit-text-size-adjust: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+          
+        .container {
+            width: 100%;
+            padding: 0 1rem;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .svg-wrapper {
+            width: 100%;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+        }
+          
+        .tagline {
+            color: #c8c8c8;
+            font-family: 'Arial', sans-serif;
+            font-size: var(--tagline-size);
+            letter-spacing: 3px;
+            font-weight: 200;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --heading-size: 120px;
+                --tagline-size: 16px;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="svg-wrapper">
+            <svg id="mainSVG" height="400" preserveAspectRatio="xMidYMid meet">
+                <!-- Static background text -->
+                <text x="50%" y="50%" 
+                      text-anchor="middle" 
+                      fill="none" 
+                      stroke="#111" 
+                      stroke-width="2"
+                      style="font-size: 200px; font-family: Arial, sans-serif; font-weight: 100;"
+                      id="staticText">
+                </text>
+                
+                <!-- Left to middle animation -->
+                <text x="50%" y="50%" 
+                      text-anchor="middle" 
+                      fill="none" 
+                      stroke="#333" 
+                      stroke-width="2"
+                      style="font-size: 200px; font-family: Arial, sans-serif; font-weight: 100;"
+                      id="leftText">
+                </text>
+                
+                <!-- Right to middle animation -->
+                <text x="50%" y="50%" 
+                      text-anchor="middle" 
+                      fill="none" 
+                      stroke="#333" 
+                      stroke-width="2"
+                      style="font-size: 200px; font-family: Arial, sans-serif; font-weight: 100;"
+                      id="rightText">
+                </text>
+            </svg>
+        </div>
+        <div class="tagline"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set content from config
+            const texts = document.querySelectorAll('#staticText, #leftText, #rightText');
+            texts.forEach(text => text.textContent = PRELOADER_CONFIG.heading);
+            document.querySelector('.tagline').textContent = PRELOADER_CONFIG.tagline;
+
+            // Calculate text width and adjust SVG viewBox
+            const textPath = document.getElementById('leftText');
+            const pathLength = textPath.getComputedTextLength();
+            const svgWidth = pathLength + 100; // Add padding
+            
+            // Set SVG width and viewBox
+            const mainSVG = document.getElementById('mainSVG');
+            mainSVG.setAttribute('width', svgWidth);
+            mainSVG.setAttribute('viewBox', `0 0 ${svgWidth} 400`);
+
+            // Set up animations with calculated path length
+            const leftText = document.getElementById('leftText');
+            const rightText = document.getElementById('rightText');
+
+            leftText.style.strokeDasharray = pathLength;
+            leftText.style.strokeDashoffset = pathLength;
+            rightText.style.strokeDasharray = pathLength;
+            rightText.style.strokeDashoffset = -pathLength;
+
+            // Add animations
+            leftText.innerHTML = PRELOADER_CONFIG.heading + `
+                <animate id="leftAnimation"
+                         attributeName="stroke-dashoffset"
+                         from="${pathLength}"
+                         to="0"
+                         dur="${PRELOADER_CONFIG.animationDuration}s"
+                         fill="freeze"
+                         calcMode="ease-in-out"/>
+            `;
+
+            rightText.innerHTML = PRELOADER_CONFIG.heading + `
+                <animate id="rightAnimation"
+                         attributeName="stroke-dashoffset"
+                         from="${-pathLength}"
+                         to="0"
+                         dur="${PRELOADER_CONFIG.animationDuration}s"
+                         fill="freeze"
+                         calcMode="ease-in-out"/>
+            `;
+
+            // Animation completion handling
+            const leftAnimation = document.querySelector('#leftAnimation');
+            
+            leftAnimation.addEventListener('endEvent', function() {
+                setTimeout(() => {
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = PRELOADER_CONFIG.redirectUrl;
+                    }, 800);
+                }, 500);
+            });
+
+            // Fallback timer
+            const totalDuration = (PRELOADER_CONFIG.animationDuration * 1000) + 1300;
+            setTimeout(() => {
+                if (!document.body.classList.contains('fade-out')) {
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = PRELOADER_CONFIG.redirectUrl;
+                    }, 800);
+                }
+            }, totalDuration);
+        });
+    </script>
+</body>
+</html>
